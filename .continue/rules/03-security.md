@@ -1,7 +1,7 @@
 ---
 name: Security — Credentials and PKI
 globs: "**/*.{ps1,py,sh,yaml,yml}"
-regex: ["(?i)(venafi|cyberark|tpp|certificate|credential|apikey|api_key|token|secret|password|thumbprint|privatekey|private_key)"]
+regex: ["(?i)(venafi|cyberark|tpp|certificate|credential|creds|securestring|apikey|api_key|token|secret|password|thumbprint|privatekey|private_key)"]
 alwaysApply: false
 ---
 
