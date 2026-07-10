@@ -11,8 +11,9 @@ Display this reference card. Do not activate or change anything.
 ### Daily Workflow
 | Command | What it does |
 |---|---|
-| `/eod` | End-of-day session summary |
-| `/pickup` | Resume from yesterday's session summary + STATE.md |
+| `/state` | Read STATE.md and report project state before any new work |
+| `/eod` | End-of-day session summary + append STATE.md entry |
+| `/pickup` | Resume from STATE.md + last session summary, confirm next action |
 | `/jira` | Generate Jira card updates from today's work |
 
 ### Code Review

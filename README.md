@@ -44,3 +44,23 @@ git subtree pull \
   git@github.com:lastusrnameon3/continue-rules.git \
   main --squash
 ```
+
+## Daily Workflow
+
+```
+Session start:  /state    → reads STATE.md, reports where you left off
+                /pickup   → reads STATE.md + last session summary, confirms next action
+
+During:         /review /challenge /breakit /premortem — as needed
+
+Session end:    /eod      → writes session summary + appends STATE.md entry
+                /jira     → generates Jira card updates (when needed)
+```
+
+STATE.md is the project's memory. `/eod` writes to it. `/state` and `/pickup` read from it. No manual paste required.
+
+Run `/help` for the full list of 25 commands.
+
+## Format Note
+
+This system uses the current Continue format: YAML config + markdown rules and prompt files. JSON config (`config.json`, `slashCommands` array) is deprecated and not used here.
