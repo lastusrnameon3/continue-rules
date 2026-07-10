@@ -1,0 +1,42 @@
+{
+  "Standard Error Block": {
+    "prefix": "errblock",
+    "body": [
+      "try {",
+      "  $1",
+      "} catch {",
+      "  Write-Host \"Error: $($_.Exception.Message)\" -ForegroundColor Red",
+      "  Write-EventLog -LogName Application -Source 'Automation' `",
+      "    -EventId 9001 -EntryType Error `",
+      "    -Message \"Failed: $($_.Exception.Message)\"",
+      "  exit 1",
+      "}"
+    ],
+    "description": "Standard try/catch with user-friendly error output and Event Log entry"
+  },
+  "Function Comment Block": {
+    "prefix": "funcblock",
+    "body": [
+      "<#",
+      ".SYNOPSIS",
+      "  $1",
+      ".DESCRIPTION",
+      "  $2",
+      ".PARAMETER $3",
+      "  $4",
+      ".EXAMPLE",
+      "  $5",
+      "#>"
+    ],
+    "description": "Standard function documentation block"
+  },
+  "CyberArk Credential Retrieval": {
+    "prefix": "cyberark",
+    "body": [
+      "# Retrieve credential from CyberArk at runtime -- never cache",
+      "# Via CyberArk API:",
+      "# $Credential = Invoke-CyberArkCredential -Safe '$1' -Object '$2'"
+    ],
+    "description": "CyberArk runtime credential retrieval pattern"
+  }
+}

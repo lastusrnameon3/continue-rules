@@ -1,0 +1,10 @@
+{
+  "editor.rulers": [120],
+  "editor.tabSize": 4,
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.wordWrap": "on",
+  "editor.renderWhitespace": "boundary",
+  "files.insertFinalNewline": true,
+  "editor.minimap.enabled": false
+}
