@@ -8,7 +8,7 @@
 #
 #   # Outside corporate network (GitHub)
 #   ./new-project-setup.sh /path/to/project \
-#     "git@github.com:lastusrnamein3/continue-rules.git"
+#     "git@github.com:lastusrnameon3/continue-rules.git"
 #
 # Parameters:
 #   $1 - Project path (required)
@@ -29,9 +29,36 @@ git subtree add \
   "$RULES_REPO" \
   main --squash
 
-# Create session folder
+# Create session and prompts folders
 mkdir -p .continue/session
 touch .continue/session/.gitkeep
+mkdir -p .continue/prompts
+
+# Create STATE.md stub
+if [ ! -f "STATE.md" ]; then
+cat > "STATE.md" << STATEEOF
+# STATE — ${PROJECT_NAME}
+
+---
+
+## $(date +%Y-%m-%d) — Project Initialized
+
+### Built
+- Continue rules loaded via subtree
+
+### Decisions + Reason
+- [Fill in as decisions are made]
+
+### Unresolved
+- None.
+
+### Constraints
+- [Fill in project constraints]
+
+### Next Slice Queued
+- [First task]
+STATEEOF
+fi
 
 # Create local overrides placeholder
 OVERRIDE=".continue/rules/99-local-overrides.md"
@@ -53,4 +80,5 @@ git add .
 git commit -m "chore: initialise continue rules for project"
 
 echo "Done. Shared rules loaded at .continue/rules/"
+echo "STATE.md created at repo root — update it with /eod"
 echo "Add project-specific rules to 99-local-overrides.md"

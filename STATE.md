@@ -70,3 +70,32 @@
 ### Next Slice Queued
 - Slice 7: config.yaml template in Notion (parallel, blocked on model string — can complete with placeholder)
 - Slice 8: docs, URL audit, merge v2-migration to main, tag v2.0.0
+
+---
+
+## 2026-07-10 — v2 Migration Complete (Slice 8)
+
+### Built
+- URL audit: all instances of `lastusrnamein3` fixed to `lastusrnameon3` in repo and Notion
+- Quickstart scripts updated: create `.continue/prompts/` and `STATE.md` stub on project init
+- README expanded: layered rules model, full 26-prompt list, config note
+- Notion hub page: v2 structure summary added, old URLs fixed
+- config.yaml page created in Notion (14 models, `MODEL_STRING_TBD` placeholder)
+- config.json page retitled "(deprecated)"
+- v2-migration merged to main, tagged v2.0.0
+
+### Decisions + Reason
+- config.yaml stays in Notion only — contains endpoint/key references
+- Old Notion pages (v1 structure, adversarial frameworks, daily workflow, VS Code settings) left in place as reference — not deleted
+- 4 `[DELETE]` duplicate pages still pending manual deletion by user
+
+### Unresolved
+- Private endpoint model string — still TBD, find-and-replace `MODEL_STRING_TBD` in Notion when ready
+- 4 `[DELETE]` duplicate pages in Notion — manual action
+
+### Constraints
+- Continue is EOL (final 2.0.0) — format is stable
+- No agents at work — all summaries human-readable
+
+### Next Slice Queued
+- None — v2 migration complete. Next work is project-specific usage.

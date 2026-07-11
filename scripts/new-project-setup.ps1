@@ -20,7 +20,7 @@
 
   # Outside corporate network (GitHub)
   .\new-project-setup.ps1 -ProjectPath "C:\repos\my-project" `
-    -RulesRepo "git@github.com:lastusrnamein3/continue-rules.git"
+    -RulesRepo "git@github.com:lastusrnameon3/continue-rules.git"
 #>
 
 param(
@@ -39,9 +39,38 @@ if ($LASTEXITCODE -ne 0) {
   exit 1
 }
 
-# Create session folder
+# Create session and prompts folders
 New-Item -ItemType Directory -Path ".continue/session" -Force | Out-Null
 New-Item -ItemType File -Path ".continue/session/.gitkeep" -Force | Out-Null
+New-Item -ItemType Directory -Path ".continue/prompts" -Force | Out-Null
+
+# Create STATE.md stub
+$StatePath = "STATE.md"
+if (-not (Test-Path $StatePath)) {
+  $ProjectName = (Get-Item $ProjectPath).Name
+@"
+# STATE — $ProjectName
+
+---
+
+## $(Get-Date -Format "yyyy-MM-dd") — Project Initialized
+
+### Built
+- Continue rules loaded via subtree
+
+### Decisions + Reason
+- [Fill in as decisions are made]
+
+### Unresolved
+- None.
+
+### Constraints
+- [Fill in project constraints]
+
+### Next Slice Queued
+- [First task]
+"@ | Set-Content $StatePath
+}
 
 # Create local overrides placeholder
 $OverridePath = ".continue/rules/99-local-overrides.md"
@@ -62,4 +91,5 @@ git add .
 git commit -m "chore: initialise continue rules for project"
 
 Write-Host "Done. Shared rules loaded at .continue/rules/" -ForegroundColor Green
+Write-Host "STATE.md created at repo root — update it with /eod" -ForegroundColor Green
 Write-Host "Add project-specific rules to 99-local-overrides.md" -ForegroundColor Green

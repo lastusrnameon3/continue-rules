@@ -59,7 +59,40 @@ Session end:    /eod      → writes session summary + appends STATE.md entry
 
 STATE.md is the project's memory. `/eod` writes to it. `/state` and `/pickup` read from it. No manual paste required.
 
-Run `/help` for the full list of 25 commands.
+Run `/help` for the full list of 26 commands.
+
+## Rules — Layered Model
+
+Rules auto-load based on their frontmatter. No manual invocation needed.
+
+**Universal (always active — any project type):**
+- `00-project-context` — reads STATE.md, project template stub
+- `01-me` — personal defaults (audit-first, direct feedback, simpler option)
+- `02-thinking` — adversarial defaults (challenge before building)
+- `03-writing` — README standard + session summary format
+- `04-tool-delegation` — context-efficient tool output handling
+
+**Domain (active only when matching files are in context):**
+- `10-code` — code standards (.ps1, .py, .sh, .js, .ts)
+- `11-security` — credential/cert/secret handling (keyword-triggered)
+- `12-git-workflow` — commit format, MR/PR standards
+- `13–16` — deployment checklists (Windows, Linux, Python)
+
+## Prompts — 26 Commands
+
+Invoke with `/name` in Continue chat.
+
+**Daily:** state, eod, pickup, jira
+**Review:** review, commit, challenge, breakit, tradeoff
+**Writing:** simplify, comment, userdocs
+**Personas:** infra-review, teamlead-review, security-review, architect-review, blindspot-review, sidebiz-review
+**Decisions:** premortem, steelman
+**Community:** community-review
+**Mode/Utility:** terse, normal, compress, usage, help
+
+## Configuration
+
+`config.yaml` is NOT in this repo — it contains endpoint URLs and API keys. The template lives in Notion under Infrastructure Engineering → Continue Rules → config.yaml (current). Copy it, fill in your values locally, do not commit it.
 
 ## Format Note
 
