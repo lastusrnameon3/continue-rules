@@ -99,3 +99,36 @@
 
 ### Next Slice Queued
 - None — v2 migration complete. Next work is project-specific usage.
+
+---
+
+## 2026-09-10 — Slice 9: STE rule pushed, Notion/repo roles split
+
+### Built
+- `.continue/rules/17-documentation-ste.md` created — the file Notion has documented as deployed since 2026-08-10 but which was never committed. Domain layer, `globs: "**/DEPLOYMENT-*.md"`, `name: ste` so it is also invokable as `@ste`.
+- `help.md` cheat sheet updated — domain rules table now lists 17. Counts are now 26 prompts + 13 rules.
+- `README.md` — 17 added to the layered-rules list; new "Where Things Live — Notion vs This Repo" section.
+
+### Decisions + Reason
+- **17 ported dense, not verbatim.** Notion page 17 is ~8KB (36-row substitution table, worked examples, procedural rewrite walkthrough). Rule files are token-conscious and load into every matching context. Kept: scope, compliance note, sentence/verb/word/punctuation limits, warnings taxonomy, 9-point self-check, the 19 highest-frequency substitutions. Dropped to Notion: full table, worked examples. File states where the full set lives.
+- **Compliance note carried verbatim.** ASD-STE100 spec and dictionary are ASD copyright; this encodes paraphrased rules and a public word list. "Never claim certified compliance" is the line most likely to be lost in a port — it is now in the rule file, not only in Notion.
+- **De-identified on the way in**, matching the Slice 4 pass. No employer names, no vault product names, no internal endpoints.
+- **README seam preserved** — 17 deliberately does not glob `README.md`; `03-writing` owns that reader. Stated in the rule file so it does not get "fixed" later.
+- **Notion = what/why, repo = how.** Notion owns intent, rationale, rejected options, and the `config.yaml` template. The repo owns the working artifacts. Behavior questions resolve against `.continue/`; rationale questions resolve against Notion. Replaces the prior "Notion is canonical for everything" framing, which could not survive the repo being the only place the rules actually run.
+
+### Unresolved
+- **How `17` came to be documented as deployed without ever being committed.** Either it was authored on the corporate copy and never pushed — which would mean GitLab→GitHub ran backwards, against the stated hard guard — or it was designed in Notion and the page was written in the wrong tense. Not yet answered. Worth answering: one is a break in repo discipline, the other is a doc bug.
+- Notion pages still describe v1 (see the Slice 8 "left in place as reference" decision) with no marker on the pages saying so. Recommendations drafted, not executed.
+- Personas page still names `/gitready` and the `/frank-*` commands, all renamed or removed in Slice 4.
+- Skills Master Reference says 13 rules — correct as of this commit, coincidentally; it was wrong before.
+- `POWERSHELL-COMMUNITY-REVIEWER.md` at repo root still references "your Frank personas" and a v1 `config.json` block. Survived the Slice 4 de-identification pass.
+- Private endpoint model string — still `MODEL_STRING_TBD` in Notion.
+
+### Constraints
+- Continue is EOL (final 2.0.0) — format stable, no future changes.
+- No agents at work — summaries and state files stay human-readable.
+- `config.yaml` stays in Notion only.
+- `git subtree` prefix stays pinned at `.continue/rules` — nothing else in the repo ships to corporate projects.
+
+### Next Slice Queued
+- Slice 10: Notion reconciliation — execute the recommendations (stamp v1 pages, fix Personas command names, retense page 17).

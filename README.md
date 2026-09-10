@@ -77,6 +77,7 @@ Rules auto-load based on their frontmatter. No manual invocation needed.
 - `11-security` — credential/cert/secret handling (keyword-triggered)
 - `12-git-workflow` — commit format, MR/PR standards
 - `13–16` — deployment checklists (Windows, Linux, Python)
+- `17-documentation-ste` — Simplified Technical English for `DEPLOYMENT-*.md` (also invokable as `@ste`)
 
 ## Prompts — 26 Commands
 
@@ -89,6 +90,21 @@ Invoke with `/name` in Continue chat.
 **Decisions:** premortem, steelman
 **Community:** community-review
 **Mode/Utility:** terse, normal, compress, usage, help
+
+## Where Things Live — Notion vs This Repo
+
+| | Owns | Answers |
+|---|---|---|
+| **Notion** (Infrastructure Engineering → ⚙️ Continue Rules) | Intent, rationale, rejected options, design discussion, `config.yaml` template | **What and why** |
+| **This repo** | Rule files, prompt files, scripts, `STATE.md` | **How — the working artifacts** |
+
+If a rule's behavior is in question, the file in `.continue/` is authoritative. If the question is
+*why* a rule exists or what was rejected on the way to it, Notion is authoritative. Content that is
+purely operational belongs here, not in Notion; content that is purely rationale belongs in Notion,
+not here. Where both need it, this repo carries the dense operational subset and links out.
+
+`STATE.md` records what changed and why at the commit level. Notion holds the longer-form reasoning
+that outlives any single change.
 
 ## Configuration
 

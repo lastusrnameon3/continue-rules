@@ -83,3 +83,4 @@ Display this reference card. Do not activate or change anything.
 | 14-deployment-windows | DEPLOYMENT-windows.md |
 | 15-deployment-linux | DEPLOYMENT-linux.md |
 | 16-deployment-python | DEPLOYMENT-python.md |
+| 17-documentation-ste | DEPLOYMENT-*.md — Simplified Technical English (also `@ste`) |
