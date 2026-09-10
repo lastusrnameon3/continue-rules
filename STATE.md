@@ -1,13 +1,13 @@
-# STATE — continue-rules
+# STATE — Clause-Skillz
 
 ---
 
 ## 2026-07-10 — v2 Migration Initiated
 
 ### Built
-- GitHub repo `lastusrnameon3/continue-rules` — 15 files, 15 commits
+- GitHub repo `lastusrnameon3/Clause-Skillz` — 15 files, 15 commits
 - Rules 01–11 in `.continue/rules/` (v1 format — JSON-era, Frank-specific)
-- Notion doc tree under Infrastructure Engineering → Continue Rules
+- Notion doc tree under Infrastructure Engineering → Clause-Skillz
 - 18 slash commands defined in JSON `slashCommands` array (Notion only, never in repo)
 - 4 files created never pushed: `.vscode/settings.json`, `.vscode/powershell.code-snippets`, `scripts/new-project-setup.ps1`, `scripts/new-project-setup.sh`
 - 7 adapted skills (from caveman/cavecrew) — source of truth: `adapted-skills.zip`
@@ -132,3 +132,48 @@
 
 ### Next Slice Queued
 - Slice 10: Notion reconciliation — execute the recommendations (stamp v1 pages, fix Personas command names, retense page 17).
+
+---
+
+## 2026-09-10 — Slice 10: migrate off Continue, rename to Clause-Skillz
+
+### Built
+- `claude/` — the Claude Code tree: 13 rules, 6 skills, 4 hooks, `settings.json`. Installs to `~/.claude/`.
+- `scripts/Setup-Machine.ps1` / `.sh` — one-time, idempotent machine bootstrap. Sets `core.excludesfile` and appends `.claude/`, `CLAUDE.md`, `CLAUDE.local.md`.
+- Repo renamed `continue-rules` → **`Clause-Skillz`** (spelling deliberate). README rewritten around Claude Code.
+- Notion reconciled: hub is now an index with Current / Reference / Archived tables; supersession banners on 10 pages; Personas carries the full command rename table.
+
+### Decisions + Reason
+- **Personal scope, not repo scope.** Claude config installs to `~/.claude/` and never enters a work repo. Whether `.claude/` is permitted in corporate repos is unanswered, and an undisclosed tool discovered in an MR is a worse conversation than not shipping one.
+- **Global git excludes, not per-repo `.gitignore`.** A `.gitignore` entry naming `.claude/` is itself a commit that discloses the tool. `core.excludesfile` discloses nothing.
+- **Machine bootstrap, not project init.** The excludes are machine setup; putting them in `init` re-runs them per project and, worse, may never run before the first repo — which is the leak.
+- **26 prompts → 6 skills.** Seven were already installed Claude skills (ported *into* Continue in Slice 5); porting back makes a second copy. Three belong to session-summary. Eleven review/decision prompts collapsed into `/review-lens` and `/challenge` — eleven near-identical descriptions compete and mis-trigger.
+- **Only `security-review` is model-invocable.** It should fire unprompted on credential-shaped work. Everything else is deliberate.
+- **Things you would forget became hooks, not skills.** Skills are what you reach for; hooks run regardless. A checklist has the same failure mode as remembering.
+- **`credential-guard` matches value-shaped secrets only** — keyword + assignment + 16-char value, or a PEM block. Keyword-only matching blocked four of six benign test cases, including `Get-Credential` and `$env:VAULT_TOKEN`.
+- **`.continue/` archived, not deleted.** It is a working v2.0.0 artifact and the only record of the prior design.
+- **Subtree distribution retired, not fixed.** Personal scope removes the need entirely.
+
+### Verified
+- 13/13 rules converted by script (`globs:` → `paths:`, `alwaysApply:` dropped, `regex:` moved to hook).
+- All 6 SKILL.md frontmatters parse; names match directories; no undeclared `$placeholders`.
+- `credential-guard` smoke-tested on 6 payloads: literal API key **blocked**, PEM key **blocked**, prose mentioning "password" **passed**, `Get-Credential` **passed**, `$env:VAULT_TOKEN` **passed**, empty payload **passed**. All rc=0, no stderr.
+- Test caught a real defect: the PEM pattern began with `-`, so grep parsed it as options and private-key detection never fired. Fixed and retested.
+- `review-gate` verified: denies first commit of a session, passes the second.
+- 15 Claude Code API claims verified against current docs before building. `if:` is tool-events-only, so `eod-reminder` filters in-script.
+
+### Unresolved
+- **GitHub rename not executed** — needs to be run on GitHub; existing clones then need `git remote set-url`.
+- **Slice 9 (`9e84e1a`) and this commit are unpushed.**
+- **`17-documentation-ste.md` on the corporate machine** — still unanswered. If a copy exists there, the corporate copy diverged from GitHub, against the hard guard.
+- Notion domain pages still restate rule bodies; they should carry *why* and *what was rejected*, then link to the file.
+- `POWERSHELL-COMMUNITY-REVIEWER.md` still references "your Frank personas" and a v1 `config.json` block — survived the Slice 4 de-identification pass.
+- 4 `[DELETE]` duplicate Notion pages — API cannot trash them.
+
+### Constraints
+- Personal scope means **non-scripting teammates get nothing**. Deliberate tradeoff, not an oversight — revisit if tool approval is ever obtained.
+- Hooks require `jq` and bash; Git Bash covers Windows.
+- `config.yaml` stays in Notion only.
+
+### Next Slice Queued
+- Push. Then restructure the Notion domain pages to why-only.

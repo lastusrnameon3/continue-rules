@@ -1,3 +1,8 @@
+# DEPRECATED 2026-09-10 — the git-subtree distribution this script uses never worked.
+# 'git subtree add --prefix .continue/rules' places the REPO ROOT at that prefix, so rules landed
+# at .continue/rules/.continue/rules/*.md and prompts were never distributed at all.
+# Superseded by scripts/Setup-Machine.* plus a copy into ~/.claude/. Kept for reference only.
+
 <#
 .SYNOPSIS
   Initialises a new project with shared Continue rules.
@@ -20,12 +25,12 @@
 
   # Outside corporate network (GitHub)
   .\new-project-setup.ps1 -ProjectPath "C:\repos\my-project" `
-    -RulesRepo "git@github.com:lastusrnameon3/continue-rules.git"
+    -RulesRepo "git@github.com:lastusrnameon3/Clause-Skillz.git"
 #>
 
 param(
   [Parameter(Mandatory)][string]$ProjectPath,
-  [string]$RulesRepo = "git@gitlab.COMPANY.com:infra/continue-rules.git"
+  [string]$RulesRepo = "git@gitlab.COMPANY.com:infra/Clause-Skillz.git"
 )
 
 Set-Location $ProjectPath

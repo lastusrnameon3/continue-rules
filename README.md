@@ -1,115 +1,121 @@
-# continue-rules
+# Clause-Skillz
 
-Continue AI coding assistant rules, prompts, and workflow standards.
+Rules, skills, hooks, and workflow standards for AI-assisted infrastructure engineering.
+
+> **Status.** This repo began as `continue-rules`, targeting the Continue extension for VS Code.
+> Continue reached end of life at 2.0.0. The system is migrating to **Claude Code, personal scope**:
+> everything installs to `~/.claude/` and nothing is committed into work repos.
+> `.continue/` is kept as the archived v2.0.0 artifact — it is not maintained.
 
 ## Structure
 
 ```
-continue-rules/
-  .continue/
-    rules/          ← Auto-loaded rules (universal + domain layers)
-    prompts/        ← Invokable slash commands
-    session/        ← End-of-day session summaries
+Clause-Skillz/
+  claude/
+    rules/          ← 13 rules: universal (00-04) + path-scoped domain (10-17)
+    skills/         ← 6 invokable skills
+    hooks/          ← 4 enforced lifecycle hooks
+    settings.json
+  .continue/        ← ARCHIVED. Continue v2.0.0. Not maintained.
   .vscode/          ← Shared editor settings and snippets
-  scripts/          ← Project initialization scripts
+  scripts/          ← Machine bootstrap
   STATE.md          ← Project state file (session continuity)
   BOUNDARY-DEFINITION.md
-  POWERSHELL-COMMUNITY-REVIEWER.md
-  README.md
 ```
 
-## Add to a Project — GitHub
+## Install — personal scope
 
 ```bash
-git subtree add \
-  --prefix .continue/rules \
-  git@github.com:lastusrnameon3/continue-rules.git \
-  main --squash
+./scripts/Setup-Machine.sh          # or Setup-Machine.ps1 on Windows
+cp -r claude/rules claude/skills claude/hooks claude/settings.json ~/.claude/
 ```
 
-## Add to a Project — GitLab (corporate)
+`Setup-Machine` configures `git config --global core.excludesfile` so `.claude/`, `CLAUDE.md`, and
+`CLAUDE.local.md` are ignored in every repo — **without** a committed `.gitignore` entry, which would
+itself disclose the tooling. Run it once per machine; it is idempotent.
 
-```bash
-git subtree add \
-  --prefix .continue/rules \
-  git@gitlab.COMPANY.com:infra/continue-rules.git \
-  main --squash
-```
+Verify: `/context` in any repo lists the five universal rules under **Memory files**. Open a `.ps1`
+and `10-code` appears; open a `.md` and it does not.
 
-## Pull Updates
+Requires `jq` and bash. Git Bash satisfies both on Windows.
 
-```bash
-git subtree pull \
-  --prefix .continue/rules \
-  git@github.com:lastusrnameon3/continue-rules.git \
-  main --squash
-```
+## Rules — layered model
 
-## Daily Workflow
+Rules load from frontmatter. No manual invocation.
 
-```
-Session start:  /state    → reads STATE.md, reports where you left off
-                /pickup   → reads STATE.md + last session summary, confirms next action
+**Universal — every session** (no `paths:` field):
 
-During:         /review /challenge /breakit /premortem — as needed
-
-Session end:    /eod      → writes session summary + appends STATE.md entry
-                /jira     → generates Jira card updates (when needed)
-```
-
-STATE.md is the project's memory. `/eod` writes to it. `/state` and `/pickup` read from it. No manual paste required.
-
-Run `/help` for the full list of 26 commands.
-
-## Rules — Layered Model
-
-Rules auto-load based on their frontmatter. No manual invocation needed.
-
-**Universal (always active — any project type):**
 - `00-project-context` — reads STATE.md, project template stub
-- `01-me` — personal defaults (audit-first, direct feedback, simpler option)
+- `01-me` — behavioral defaults (audit first, simpler option, direct feedback)
 - `02-thinking` — adversarial defaults (challenge before building)
 - `03-writing` — README standard + session summary format
 - `04-tool-delegation` — context-efficient tool output handling
 
-**Domain (active only when matching files are in context):**
-- `10-code` — code standards (.ps1, .py, .sh, .js, .ts)
-- `11-security` — credential/cert/secret handling (keyword-triggered)
+**Domain — only when a matching file is in context** (`paths:` glob):
+
+- `10-code` — code standards (`.ps1`, `.py`, `.sh`, `.js`, `.ts`)
+- `11-security` — credential, certificate, and secret handling
 - `12-git-workflow` — commit format, MR/PR standards
-- `13–16` — deployment checklists (Windows, Linux, Python)
-- `17-documentation-ste` — Simplified Technical English for `DEPLOYMENT-*.md` (also invokable as `@ste`)
+- `13`–`16` — deployment checklists (shared, Windows, Linux, Python)
+- `17-documentation-ste` — Simplified Technical English for `DEPLOYMENT-*.md`
 
-## Prompts — 26 Commands
+## Skills — `/name`
 
-Invoke with `/name` in Continue chat.
+| Skill | Invoked by | Modes |
+|---|---|---|
+| `/review-lens` | you | infra · teamlead · architect · blindspot · sidebiz · community |
+| `/challenge` | you | challenge · premortem · steelman · tradeoff · breakit |
+| `/security-review` | **you or Claude** | — |
+| `/userdocs` | you | — |
+| `/jira` | you | — |
+| `/plainify` | you | names · comments · both |
 
-**Daily:** state, eod, pickup, jira
-**Review:** review, commit, challenge, breakit, tradeoff
-**Writing:** simplify, comment, userdocs
-**Personas:** infra-review, teamlead-review, security-review, architect-review, blindspot-review, sidebiz-review
-**Decisions:** premortem, steelman
-**Community:** community-review
-**Mode/Utility:** terse, normal, compress, usage, help
+`security-review` is the only model-invocable skill: it should fire on its own when credential-shaped
+work appears. Everything else is a deliberate invocation.
 
-## Where Things Live — Notion vs This Repo
+Not rebuilt here — already installed as Claude skills: terse-mode · context-compress · usage-stats ·
+quick-reference · commit-message · code-review · session-summary (which owns `/eod`, `/pickup`, `/state`).
+
+## Hooks — the things you would forget
+
+Skills are what you reach for. Hooks run regardless of what you or the model decide.
+
+| Hook | Event | Does |
+|---|---|---|
+| `session-start` | SessionStart | Injects the latest STATE.md entry. Replaces remembering `/state`. |
+| `credential-guard` | PreToolUse `Edit\|Write` | Blocks literal secrets and PEM private keys. |
+| `review-gate` | PreToolUse `Bash` (git commit) | One nudge to review, then silent for the session. |
+| `eod-reminder` | Stop | Uncommitted changes and no STATE.md entry today → reminds. |
+
+`credential-guard` replaces Continue's content-keyword `regex:` trigger on `11-security`. Continue
+could only inject advice; a hook denies the write. It matches value-shaped secrets — keyword plus
+assignment plus a 16-character value, or a PEM block — not bare keywords, which is what the
+`11-security` context rule is for.
+
+## Where things live — Notion vs this repo
 
 | | Owns | Answers |
 |---|---|---|
-| **Notion** (Infrastructure Engineering → ⚙️ Continue Rules) | Intent, rationale, rejected options, design discussion, `config.yaml` template | **What and why** |
-| **This repo** | Rule files, prompt files, scripts, `STATE.md` | **How — the working artifacts** |
+| **Notion** (Infrastructure Engineering → ⚙️ Clause-Skillz) | Intent, rationale, rejected options, `config.yaml` | **What and why** |
+| **This repo** | Rule files, skills, hooks, scripts, `STATE.md` | **How — the working artifacts** |
 
-If a rule's behavior is in question, the file in `.continue/` is authoritative. If the question is
-*why* a rule exists or what was rejected on the way to it, Notion is authoritative. Content that is
-purely operational belongs here, not in Notion; content that is purely rationale belongs in Notion,
-not here. Where both need it, this repo carries the dense operational subset and links out.
+Behavior questions resolve against the files. Questions about *why* a rule exists, or what was
+rejected on the way to it, resolve against Notion. If the same sentence is in both, delete it from
+Notion.
 
 `STATE.md` records what changed and why at the commit level. Notion holds the longer-form reasoning
 that outlives any single change.
 
+## Distribution
+
+**None.** Personal scope by design — the install is a copy into `~/.claude/` on each machine.
+
+The former `git subtree --prefix .continue/rules` mechanism is retired. It never worked: `subtree`
+places the *repo root* at the prefix, so rules landed at `.continue/rules/.continue/rules/*.md`
+where nothing looks for them, four frontmatter-less markdown files landed where rules were expected,
+and `.continue/prompts/` was never distributed at all.
+
 ## Configuration
 
-`config.yaml` is NOT in this repo — it contains endpoint URLs and API keys. The template lives in Notion under Infrastructure Engineering → Continue Rules → config.yaml (current). Copy it, fill in your values locally, do not commit it.
-
-## Format Note
-
-This system uses the current Continue format: YAML config + markdown rules and prompt files. JSON config (`config.json`, `slashCommands` array) is deprecated and not used here.
+`config.yaml` is not in this repo — it holds endpoint URLs and key references, and lives in Notion
+only. Claude Code needs no equivalent: personal scope means no shared config.
