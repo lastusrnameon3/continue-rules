@@ -165,7 +165,7 @@
 ### Unresolved
 - **GitHub rename not executed** — needs to be run on GitHub; existing clones then need `git remote set-url`.
 - **Slice 9 (`9e84e1a`) and this commit are unpushed.**
-- **`17-documentation-ste.md` on the corporate machine** — still unanswered. If a copy exists there, the corporate copy diverged from GitHub, against the hard guard.
+- ~~`17-documentation-ste.md` on the corporate machine~~ — **CLOSED 2026-09-11, not investigated.** Frank's call: the repo version is authoritative, use it. Whether a pre-2026-08-10 copy existed corp-side is now moot — anything there gets overwritten by the repo copy. Rejected the investigation because the only thing it could have produced was a process finding about a system being retired this week; the cost of knowing exceeded the value.
 - Notion domain pages still restate rule bodies; they should carry *why* and *what was rejected*, then link to the file.
 - `POWERSHELL-COMMUNITY-REVIEWER.md` still references "your Frank personas" and a v1 `config.json` block — survived the Slice 4 de-identification pass.
 - 4 `[DELETE]` duplicate Notion pages — API cannot trash them.
